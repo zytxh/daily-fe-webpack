@@ -4,3 +4,6 @@ class Foo {
     console.log('Foo constructor');
   }
 }
+
+require('./index.css');
+require('./modules/module-index');
