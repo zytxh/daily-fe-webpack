@@ -1,4 +1,5 @@
 let a = 'aaa';
+// import $ from 'jquery';
 class Foo { 
   constructor() { 
     console.log('Foo constructor');

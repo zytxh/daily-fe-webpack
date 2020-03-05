@@ -1,13 +1,20 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: ['./src', './src/base'],
+  // entry: ['./src', './src/base'],
+  entry: { // 多入口，每个入口根据其内部依赖生成对应chunk，最后经过一些操作(比如代码分割),写入dist目录，生成一些assets
+    index: './src/index.js',
+    base: './src/base.js',
+    vendor: 'jquery',
+    common: './src/common.js', // 公共模块的引入
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     // 单入口文件默认name为main hash是32位根据打包内容生成的hash序列(可以指定为8位)
-    filename: 'bundle.[hash:8].js',
+    filename: '[name].[hash:8].js',
   },
   module: {
     rules: [
@@ -21,9 +28,22 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.ProvidePlugin({ // 全部模块 按需的变量注入
+      $: 'jquery',
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
       filename: 'index.html', // 打包后命名
+      hash: true, // html引入的js文件加入查询字符串避免缓存（此处和output的hash功能重复了）
+      chunks: ['vendor','index', 'common'], // 决定了引入哪些chunk
+      minify: {
+        removeAttributeQuotes: true, // 移除属性的双引号
+      }
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
+      filename: 'base.html', // 打包后命名
+      chunks: ['vendor', 'base', 'common'],
       hash: true, // html引入的js文件加入查询字符串避免缓存（此处和output的hash功能重复了）
       minify: {
         removeAttributeQuotes: true, // 移除属性的双引号
