@@ -5,6 +5,7 @@ class Foo {
     console.log('Foo constructor');
   }
 }
-let $ = require('expose-loader?$!jquery');
-require('./index.css');
+// let $ = require('expose-loader?$!jquery');
+require('jquery');
+require('style-loader!css-loader!./index.css');
 require('./modules/module-index');

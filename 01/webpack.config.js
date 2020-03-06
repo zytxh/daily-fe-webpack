@@ -18,18 +18,24 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.css$/,
-        // css-loader 处理样式表中的url路径的资源打包，将css当做一个模块处理
-        // style- loader会将样式文件作为style标签插入到head元素内
-        // 注意书写顺序，编译时loader会从右至左使用
-        use: ['style-loader', 'css-loader'], 
-      },
       // {
-      //   test: require.resolve('jquery'),
-      //   loader: 'expose-loader?$'
-      // }
-    ]
+      //   test: /\.css$/,
+      //   // css-loader 处理样式表中的url路径的资源打包，将css当做一个模块处理
+      //   // style- loader会将样式文件作为style标签插入到head元素内
+      //   // 注意书写顺序，编译时loader会从右至左使用
+      //   use: ['style-loader', 'css-loader'],
+      // },
+      {
+        test: require.resolve('jquery'),
+        // loader: 'expose-loader?$',
+        use: [
+          {
+            loader: 'expose-loader',
+            options: '$',
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     // new webpack.ProvidePlugin({ // 全部模块 按需的变量注入

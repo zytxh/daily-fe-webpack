@@ -1,3 +1,4 @@
 - 如何暴露一个全局变量给各个模块直接使用
   - webpack.ProvidePlugin
   - expose-loader
+- loader的几种写法？
