@@ -8,8 +8,8 @@ module.exports = {
   entry: { // 多入口，每个入口根据其内部依赖生成对应chunk，最后经过一些操作(比如代码分割),写入dist目录，生成一些assets
     index: './src/index.js',
     base: './src/base.js',
-    vendor: 'jquery',
-    common: './src/common.js', // 公共模块的引入
+    // vendor: 'jquery',
+    // common: './src/common.js', // 公共模块的引入
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -24,13 +24,17 @@ module.exports = {
         // style- loader会将样式文件作为style标签插入到head元素内
         // 注意书写顺序，编译时loader会从右至左使用
         use: ['style-loader', 'css-loader'], 
-      }
+      },
+      // {
+      //   test: require.resolve('jquery'),
+      //   loader: 'expose-loader?$'
+      // }
     ]
   },
   plugins: [
-    new webpack.ProvidePlugin({ // 全部模块 按需的变量注入
-      $: 'jquery',
-    }),
+    // new webpack.ProvidePlugin({ // 全部模块 按需的变量注入
+    //   $: 'jquery',
+    // }),
     new HtmlWebpackPlugin({
       template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
       filename: 'index.html', // 打包后命名
