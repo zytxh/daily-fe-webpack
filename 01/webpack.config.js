@@ -6,10 +6,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   // entry: ['./src', './src/base'],
   entry: { // 多入口，每个入口根据其内部依赖生成对应chunk，最后经过一些操作(比如代码分割),写入dist目录，生成一些assets
-    index: './src/index.js',
-    base: './src/base.js',
+    // index: './src/index.js',
+    // base: './src/base.js',
     // vendor: 'jquery',
     // common: './src/common.js', // 公共模块的引入
+
+    main: './src_02/main.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -18,13 +20,13 @@ module.exports = {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.css$/,
-      //   // css-loader 处理样式表中的url路径的资源打包，将css当做一个模块处理
-      //   // style- loader会将样式文件作为style标签插入到head元素内
-      //   // 注意书写顺序，编译时loader会从右至左使用
-      //   use: ['style-loader', 'css-loader'],
-      // },
+      {
+        test: /\.css$/,
+        // css-loader 处理样式表中的url路径的资源打包，将css当做一个模块处理
+        // style- loader会将样式文件作为style标签插入到head元素内
+        // 注意书写顺序，编译时loader会从右至左使用
+        use: ['style-loader', 'css-loader'],
+      },
       {
         test: require.resolve('jquery'),
         // loader: 'expose-loader?$',
@@ -34,6 +36,17 @@ module.exports = {
             options: '$',
           },
         ],
+      },
+      // 解析任意的二进制文件(图片文件/word等。。。)，拷贝文件至指定位置
+      {
+        test: /\.(png|jpeg|gif)$/,
+        // use: ['file-loader'],
+        use: {
+          loader: 'file-loader',
+          options: {
+            outputPath: 'images', // 通过use对象指定输出目录
+          } 
+        },
       },
     ],
   },
@@ -45,20 +58,20 @@ module.exports = {
       template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
       filename: 'index.html', // 打包后命名
       hash: true, // html引入的js文件加入查询字符串避免缓存（此处和output的hash功能重复了）
-      chunks: ['vendor','index', 'common'], // 决定了引入哪些chunk
+      // chunks: ['vendor','index', 'common'], // 决定了引入哪些chunk
       minify: {
         removeAttributeQuotes: true, // 移除属性的双引号
       }
     }),
-    new HtmlWebpackPlugin({
-      template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
-      filename: 'base.html', // 打包后命名
-      chunks: ['vendor', 'base', 'common'],
-      hash: true, // html引入的js文件加入查询字符串避免缓存（此处和output的hash功能重复了）
-      minify: {
-        removeAttributeQuotes: true, // 移除属性的双引号
-      }
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: './src/index.html', // html模板（此处使用ejs模板，可以使用ejs语法手动插入一些数据）
+    //   filename: 'base.html', // 打包后命名
+    //   chunks: ['vendor', 'base', 'common'],
+    //   hash: true, // html引入的js文件加入查询字符串避免缓存（此处和output的hash功能重复了）
+    //   minify: {
+    //     removeAttributeQuotes: true, // 移除属性的双引号
+    //   }
+    // }),
     new CleanWebpackPlugin()
   ],
   // 配合package.json中的dev命令使用
