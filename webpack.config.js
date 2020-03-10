@@ -42,10 +42,15 @@ module.exports = {
         test: /\.(png|jpeg|gif)$/,
         // use: ['file-loader'],
         use: {
-          loader: 'file-loader',
+          // loader: 'file-loader',
+          // options: {
+          //   outputPath: 'images', // 通过use对象指定输出目录
+          // } 
+          loader: 'url-loader', // 在文件比较小时，可通过url-loader将图片转为base64嵌入在页面中，减少请求次数
           options: {
-            outputPath: 'images', // 通过use对象指定输出目录
-          } 
+            limit: 8*1024*1024, // 此处设置8M的限制
+            outputPath: 'images',
+          },
         },
       },
     ],
