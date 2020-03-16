@@ -2,6 +2,11 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+// 将css文件单独提取出来 ExtractTextWebpackPlugin 报错 文档上不建议使用
+// const extractCss = new ExtractTextWebpackPlugin('css/css.css');
+// const extractLess = new ExtractTextWebpackPlugin('css/less.css');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   // entry: ['./src', './src/base'],
@@ -25,7 +30,19 @@ module.exports = {
         // css-loader 处理样式表中的url路径的资源打包，将css当做一个模块处理
         // style- loader会将样式文件作为style标签插入到head元素内
         // 注意书写顺序，编译时loader会从右至左使用
-        use: ['style-loader', 'css-loader'],
+        // use: ['style-loader', 'css-loader'],
+        // loader: extractCss.extract({
+        //   use: ['css-loader'],
+        // }),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: './css'
+            }
+          },
+          "css-loader",
+        ],
       },
       {
         test: require.resolve('jquery'),
@@ -55,7 +72,17 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        // use: ['style-loader', 'css-loader', 'less-loader'],
+        // loader: extractCss.extract({
+        //   use: ['css-loader', 'less-loader'],
+        // }),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          "css-loader",
+          "less-loader",
+        ]
       },
     ],
   },
@@ -81,7 +108,12 @@ module.exports = {
     //     removeAttributeQuotes: true, // 移除属性的双引号
     //   }
     // }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    // extractCss,
+    // extractLess,
+    new MiniCssExtractPlugin({
+      filename: "css/[name].css",
+    }),
   ],
   // 配合package.json中的dev命令使用
   /**
